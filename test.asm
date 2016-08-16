@@ -1,11 +1,24 @@
 org 100h
 
+	mov al, 00h
+	call set_video_mode	; set video mode to  40x25, 16 colors
+
 	lea bx, msg
 	call print
 
 	jmp $			; jump to the same location
 
 	msg	db	'Hello there', 0dh, 'How are you?', 0
+
+; change the video mode
+; al [in]	- (00h, 03h, 13h) the desired video mode
+set_video_mode:
+	pusha
+	mov ah, 0
+	int 10h
+	popa
+	ret
+	
 
 ; print a char to the console
 ; al [in] 	- char to be printed
