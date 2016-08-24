@@ -52,7 +52,7 @@ print:
 	je .print_end
 	call putch
 	inc bx
-	jmp .print_loop:
+	jmp .print_loop
 
 .print_end:
 	popa
