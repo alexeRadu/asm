@@ -3,7 +3,7 @@ org 100h
 	mov al, 00h
 	call set_video_mode	; set video mode to  40x25, 16 colors
     
-    mov al, 0
+    mov al, 1
     mov ch, 0
     mov cl, 1
     mov dh, 0
@@ -35,4 +35,4 @@ read_sect:
     
 include io.asm
 
-    sector db 0
+sector:
