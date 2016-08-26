@@ -16,13 +16,27 @@ org 100h
     mov cx, 0dh         
     
     call memcpy
-
     
+    lea bx, msg_sectors_per_cluster
+    call print
     
-
+    lea di, value
+    mov al, [sectors_per_cluster]
+    call byte2str
+    
+    mov bx, di
+    call print
+    
+    lea bx, msg_enter
+    call print
+    
 	jmp $			; jump to the same location
 
-	msg	db	'Hello there', 0
+	msg_bytes_per_sector	db	'bytes per sector: ', 0
+	msg_sectors_per_cluster db  'sectors per cluster: ', 0
+	msg_enter db 0dh, 0
+
+	value db    0 dup(16)
 	
 	bytes_per_sector        dw  0
 	sectors_per_cluster     db  0
@@ -35,6 +49,62 @@ org 100h
 	
 	sectors_per_track       db  0
 	tracks_per_cylinder     db  0
+
+; convert a byte to string
+; al [in]       - byte to be converted
+; es:di [out]   - ptr to dst string
+byte2str:
+    pusha
+    
+    push ax
+    mov ax, 0
+    mov cx, 4
+    call memset
+    pop ax
+    add di, 2
+    mov bl, 10
+
+.byte2str_loop:             
+    mov ah, 0
+
+    cmp ax, 0
+    je .byte2str_end
+    div bl
+    add ah, 30h
+    mov [di], ah
+    dec di
+    jmp .byte2str_loop
+    
+.byte2str_end:
+    inc di
+    mov [_byte2str_tmp], di
+    popa
+    mov di, [_byte2str_tmp]
+    ret
+    
+    _byte2str_tmp dw    0
+
+; convert a word to string
+word2str:
+
+; set memory to a certain value
+; ds:si [in]    - pointer to destination
+; cx            - byte count
+; al            - value
+memset:
+    pusha
+
+.memset_loop:
+    cmp cx, 0
+    je .memset_end
+    stosb
+    dec cx
+    jmp .memset_loop
+
+.memset_end:
+    popa
+    ret
+
 	
 ; copy memory from source to destination
 ; ds:si [in]    - src
