@@ -57,12 +57,10 @@ org 100h
 ; es:di [out]   - ptr to dst string
 byte2str:
     pusha
-    
-    push ax
-    mov ax, 0
+
     mov cx, 4
-    call memset
-    pop ax
+    call zeromem
+
     add di, 2
     mov bl, 10
 
@@ -88,6 +86,18 @@ byte2str:
 
 ; convert a word to string
 word2str:
+
+
+; zero out memory
+; ds:si [in]    - pointer to memory
+; cx            - byte count
+zeromem:
+    push ax
+    mov al, 0
+    call memset
+    pop ax
+    ret
+
 
 ; set memory to a certain value
 ; ds:si [in]    - pointer to destination
