@@ -18,7 +18,7 @@ org 100h
     
     call memcpy
     
-    ; print bytes per sector
+    ; print sectors per cluster
     lea bx, msg_sectors_per_cluster
     call print
     
