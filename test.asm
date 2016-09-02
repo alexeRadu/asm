@@ -58,28 +58,27 @@ org 100h
 byte2str:
     pusha
 
-    mov cx, 4
+    mov cx, 4           ; clear 3 digits and a null char
     call zeromem
 
-    add di, 2
-    mov bl, 10
+    add di, 2           ; move to first digit position
+    mov bl, 10          ; base 10
 
 .byte2str_loop:             
-    mov ah, 0
-
-    cmp ax, 0
-    je .byte2str_end
-    div bl
-    add ah, 30h
-    mov [di], ah
-    dec di
+    mov ah, 0           ; clear the rest from previous loop
+    cmp ax, 0           ; see if last divide was zero
+    je .byte2str_end    ; if so, goto end
+    div bl              ; ax / bl = al rest ah
+    add ah, 30h         ; convert digit to string (30h = '0')
+    mov [di], ah        ; save digit
+    dec di              ; go to next digit pointer
     jmp .byte2str_loop
     
 .byte2str_end:
-    inc di
-    mov [_byte2str_tmp], di
+    inc di                      ; move the di to point to the first non-zero char
+    mov [_byte2str_tmp], di     ; save di
     popa
-    mov di, [_byte2str_tmp]
+    mov di, [_byte2str_tmp]     ; restore di
     ret
     
     _byte2str_tmp dw    0
