@@ -89,7 +89,7 @@ word2str:
 
 
 ; zero out memory
-; ds:si [in]    - pointer to memory
+; es:di [in]    - pointer to memory
 ; cx            - byte count
 zeromem:
     push ax
@@ -100,7 +100,7 @@ zeromem:
 
 
 ; set memory to a certain value
-; ds:si [in]    - pointer to destination
+; es:di [in]    - pointer to destination
 ; cx            - byte count
 ; al            - value
 memset:
