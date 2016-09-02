@@ -18,6 +18,19 @@ org 100h
     
     call memcpy
     
+    ; print bytes per sector
+    lea bx, msg_bytes_per_sector
+    call print
+
+    lea di, value
+    mov ax, WORD PTR [bytes_per_sector]
+    call word2str
+    mov bx, di
+    call print
+
+    lea bx, msg_enter
+    call print
+
     ; print sectors per cluster
     lea bx, msg_sectors_per_cluster
     call print
@@ -83,8 +96,35 @@ byte2str:
     
     _byte2str_tmp dw    0
 
+
 ; convert a word to string
 word2str:
+    pusha
+                        ; max value on 16 bits is 65536 (on 5 chars)
+    mov cx, 6           ; clear 5 digits and a null char 
+    call zeromem
+
+    add di, 4           ; move to first digit position
+    mov bx, 10          ; base 10
+
+.word2str_loop:
+    mov dx, 0           ; clear the rest from previous loop
+    cmp ax, 0           ; see if last divide was zero
+    je .word2str_end    ; if so, goto end
+    div bx              ; (dx, ax) / bx = ax rest dx
+    add dx, 30h         ; convert digit to string (30h = '0')
+    mov [di], dl        ; save digit
+    dec di
+    jmp .word2str_loop
+
+.word2str_end:
+    inc di                      ; move the di to point to the first non-zero char
+    mov [_word2str_tmp], di     ; save di
+    popa
+    mov di, [_word2str_tmp]     ; restore di
+    ret
+
+    _word2str_tmp   dw      0
 
 
 ; zero out memory
