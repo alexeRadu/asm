@@ -9,6 +9,7 @@ org 100h
     lea bx, sector      ; into "sector" buffer
     call read_sect
     
+    ; save BIOS parameter block
     add bx, 0bh         ; go to bios parameter block
     mov si, bx          ; move to src
     
@@ -17,6 +18,7 @@ org 100h
     
     call memcpy
     
+    ; print bytes per sector
     lea bx, msg_sectors_per_cluster
     call print
     
