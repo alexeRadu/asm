@@ -51,7 +51,7 @@ org 100h
 	msg_sectors_per_cluster db  'sectors per cluster: ', 0
 	msg_enter db 0dh, 0
 
-	value db    0 dup(16)
+	value db    16 dup(0)
 	
 	bytes_per_sector        dw  0
 	sectors_per_cluster     db  0
